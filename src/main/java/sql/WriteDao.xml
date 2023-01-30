@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.WriteDao">
+	<resultMap type="vo.UserVo" id="UserMap">
+		<result column="u_id" property="id"/>	
+		<result column="u_username" property="username"/>	
+		<result column="u_password" property="password"/>	
+		<result column="u_name" property="name"/>	
+		<result column="u_authorities" property="authorities"/>	
+		<result column="u_regdate" property="regdate"/>	
+	</resultMap>
+	<resultMap type="vo.WriteVo" id="WriteMap">
+		<result column="w_id" property="id"/>
+		<result column="w_subject" property="subject"/>
+		<result column="w_content" property="content"/>
+		<result column="w_viewcnt" property="viewcnt"/>
+		<result column="w_regdate" property="regdate"/>
+		<collection property="user" resultMap="UserMap"></collection>
+	</resultMap>
+	
+	<insert id="write" flushCache="true" parameterType="vo.WriteVo">
+	<selectKey keyProperty="id" resultType="int" order="AFTER">
+		select seq_write_id.currval from dual
+	</selectKey>
+		INSERT INTO tbl_write
+			(id, subject, content, user_id)
+		VALUES
+			(seq_write_id.NEXTVAL, #{subject}, #{content}, #{user.id})
+	</insert>
+	
+	<select id="showId" resultMap="WriteMap">
+		select 
+			w.id "w_id",
+			w.subject "w_subject",
+			w.content w_content,
+			w.viewcnt "w_viewcnt",
+			w.regdate "w_regdate",
+			u.id "u_id",
+			u.username "u_username",
+			u.name "u_name",
+			u.authorities "u_authorities",
+			u.regdate "u_regdate"
+		from
+			tbl_write w, tbl_user u
+		where
+			w.user_id = u.id and w.id = #{id}
+		order by 
+        	w.id desc
+	</select>
+	
+	<update id="viewPlus" flushCache="true">
+		update tbl_write
+		set viewcnt = viewcnt + 1
+		where id = #{id}
+	</update>
+	
+	<select id="showAll" resultMap="WriteMap">
+		select 
+			w.id "w_id",
+			w.subject "w_subject",
+			w.content w_content,
+			w.viewcnt "w_viewcnt",
+			w.regdate "w_regdate",
+			u.id "u_id",
+			u.username "u_username",
+			u.name "u_name",
+			u.authorities "u_authorities",
+			u.regdate "u_regdate"
+		from
+			tbl_write w, tbl_user u
+		where
+			w.user_id = u.id
+		order by 
+        	w.id desc
+	</select>
+	
+</mapper>

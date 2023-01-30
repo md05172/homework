@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.UserDao">
+	<!-- 아이디 중복확인 -->
+	<select id="checkId" parameterType="vo.UserVo" resultType="vo.UserVo">
+		select 
+			id, username, password, name, authorities, regdate
+		from 
+			tbl_user
+		where username = #{username}
+	</select>
+	
+	<!-- 회원가입완료 -->
+	<insert id="joinOk" flushCache="true" parameterType="vo.UserVo">
+	<selectKey keyProperty="id" resultType="int" order="AFTER">
+		select seq_user_id.currval from dual
+	</selectKey>
+		insert into tbl_user
+			(id, username, password, name)
+		values
+			(seq_user_id.nextval, #{username}, #{password}, #{name})
+	</insert>
+	
+	<select id="getPw" parameterType="vo.UserVo">
+		select password
+		from tbl_user
+		where username = #{username}
+	</select>
+</mapper>

@@ -1,0 +1,17 @@
+#join {
+	background-color: aquamarine;
+    width: 60%;
+    height: 500px;
+    margin: 0 auto;
+}
+
+#join input {
+	width: 80%;
+	height: 20px;
+	border-radius: 10px;	
+}
+
+
+
+
+
